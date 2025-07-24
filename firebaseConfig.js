@@ -4,21 +4,21 @@
  * Configuração do Firebase para o Aplicativo.
  *
  * Este arquivo inicializa o Firebase e exporta as instâncias necessárias
- * (como Storage) para serem usadas em outras partes do aplicativo.
+ * (como Storage e Auth) para serem usadas em outras partes do aplicativo.
  *
- * Ponto MVVM: Embora não seja parte direta do MVVM, esta é uma camada de "Serviço"
- * que o ViewModel (FileViewerViewModel) consumirá para interagir com o backend.
+ * Ponto MVVM: Este é um serviço que os ViewModels irão consumir.
  *
  * Dependências:
  * - firebase: Biblioteca oficial do Firebase.
  *
- * Quem o chama: Principalmente viewmodels/FileViewerViewModel.js
+ * Quem o chama: Principalmente viewmodels/FileViewerViewModel.js e AuthViewModel.js (novo).
  * Quem ele chama: N/A (apenas inicializa o SDK do Firebase).
  * Necessita de pacote: 'firebase'
  */
 
 import { initializeApp } from 'firebase/app';
-import { getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage';
+import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth'; // NOVO: Módulo de Autenticação
+import { deleteObject, getDownloadURL, getStorage, listAll, ref, uploadBytes } from 'firebase/storage'; // Adicionado deleteObject
 
 // Suas credenciais do Firebase (substitua pelos seus próprios valores!)
 // const firebaseConfig = {
@@ -44,11 +44,14 @@ const firebaseConfig = {
 // Inicializa o Firebase
 const app = initializeApp(firebaseConfig);
 
-// Obtém uma instância do Firebase Storage
-const storage = getStorage(app);
+// Obtém instâncias dos serviços
+const storage = getStorage(app); // Obtém uma instância do Firebase Storage
+const auth = getAuth(app); // NOVO: Instância do Auth
 
 export {
-    getDownloadURL,
-    listAll, ref, storage, uploadBytes
+  auth, // NOVO: Exporta a instância do Auth
+  createUserWithEmailAndPassword, deleteObject, getDownloadURL,
+  listAll, onAuthStateChanged, ref, // NOVO: Funções de autenticação
+  signInWithEmailAndPassword,
+  signOut, storage, uploadBytes
 };
-
